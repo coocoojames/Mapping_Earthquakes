@@ -2,7 +2,7 @@ console.log('Working!');
 
 let cityData = cities;
 
-let map = L.map('mapID').setView([36.1733, -120.1794], 7);
+let map = L.map('mapID').setView([37.5, -122.5], 10);
 
 let streets = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -15,21 +15,43 @@ let streets = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{
 
 streets.addTo(map);
 
-let marker = L.marker([34.0522, -118.2437]).addTo(map);
+let SFAirport =
+{"type":"FeatureCollection","features":[{
+    "type":"Feature",
+    "properties":{
+        "id":"3469",
+        "name":"San Francisco International Airport",
+        "city":"San Francisco",
+        "country":"United States",
+        "faa":"SFO",
+        "icao":"KSFO",
+        "alt":"13",
+        "tz-offset":"-8",
+        "dst":"A",
+        "tz":"America/Los_Angeles"},
+        "geometry":{
+            "type":"Point",
+            "coordinates":[-122.375,37.61899948120190]}}
+]};
 
-cityData.forEach(function(city) {
-    console.log(city)
-    L.circleMarker(city.location, {radius: city.population/100000, color: 'black', fillColor: '#f03'})
-    .bindPopup('<h2>' + city.city + ', ' + city.state + '</h2> <hr> <h3>Population: ' + city.population).addTo(map);
-});
+// // PointToLayer function
+// L.geoJSON(SFAirport, {
+//     pointToLayer: (feature, latlng) => {
+//         console.log(feature);
+//         console.log(latlng);
+//         return L.marker(latlng)
+//         .bindPopup('<h1>' + feature.properties.name + '</h1> <hr> <h3>' 
+//         + feature.properties.city + ', ' + feature.properties.country + '</h3>');
+//     }
+// }).addTo(map);
 
-let circle = L.circleMarker([34.0522, -118.2437], {radius: 100}).addTo(map);
-
-let line = [
-    [33.9416, -118.4085],
-    [37.6213, -122.3790]
-];
-let polyline = L.polyline(line, {
-    color: 'red'
+// onEachFeature function
+L.geoJSON(SFAirport, {
+    onEachFeature: function(feature, layer) {
+        console.log(layer);
+        layer.bindPopup('<h2> Airport Code: ' + feature.properties.faa + '</h2>');
+    }
 }).addTo(map);
+
+// 
 console.log('Still workin baby!');
