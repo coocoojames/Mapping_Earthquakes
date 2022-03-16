@@ -16,24 +16,24 @@ let streets = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{
 
 // streets.addTo(map);
 
-let dark = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+let satelliteStreets = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
-    id: 'mapbox/dark-v10',
+    id: 'mapbox/satellite-streets-v11',
     tileSize: 512,
     zoomOffset: -1,
     accessToken: api_key
 });
 
 let baseMaps = {
-    Street: streets,
-    Dark: dark
+    'Streets': streets,
+    'satStreets': satelliteStreets
 };
 
 let map = L.map(mapID, {
-    center: [44.0, -80.0],
-    zoom: 2,
-    layers: [streets]
+    center: [43.7, -79.3],
+    zoom: 11,
+    layers: [satelliteStreets]
 });
 
 L.control.layers(baseMaps).addTo(map);
@@ -79,8 +79,8 @@ let weirdStyle = {
     color: '#ffffa1',
     weight: 2
 }
-let torontoData = 'https://raw.githubusercontent.com/coocoojames/Mapping_Earthquakes/GeoJSON_Linestrings/Mapping_GeoJSON_Linestrings/torontoRoutes.json';
-d3.json(torontoData).then((data) => {
+let the6 = 'https://raw.githubusercontent.com/coocoojames/Mapping_Earthquakes/GeoJSON_Polygons/Mapping_GeoJSON_Polygons/torontoNeighborhoods.json';
+d3.json(the6).then((data) => {
     console.log(data);
     L.geoJSON(data, {
         // color: '#ffffa1',
@@ -88,7 +88,7 @@ d3.json(torontoData).then((data) => {
         style: weirdStyle,
         onEachFeature: (feature, layer) => {
             console.log(layer);
-            layer.bindPopup('<h1> Airlines: ' + feature.properties.airline + '</h1>')
+            layer.bindPopup('<h1> Neighborhood Name: ' + feature.properties.AREA_NAME + '</h1>')
         }
     }).addTo(map);
 })
