@@ -2,9 +2,21 @@ console.log('Working!');
 
 let cityData = cities;
 
-let map = L.map('mapID').setView([37.5, -122.5], 10);
+// let map = L.map('mapID').setView([30, 30], 2);
+
 
 let streets = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: api_key
+});
+
+// streets.addTo(map);
+
+let dark = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     id: 'mapbox/dark-v10',
@@ -13,7 +25,18 @@ let streets = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{
     accessToken: api_key
 });
 
-streets.addTo(map);
+let baseMaps = {
+    Street: streets,
+    Dark: dark
+};
+
+let map = L.map(mapID, {
+    center: [30, 30],
+    zoom: 2,
+    layers: [streets]
+});
+
+L.control.layers(baseMaps).addTo(map);
 
 let SFAirport =
 {"type":"FeatureCollection","features":[{
@@ -45,13 +68,23 @@ let SFAirport =
 //     }
 // }).addTo(map);
 
-// onEachFeature function
-L.geoJSON(SFAirport, {
-    onEachFeature: function(feature, layer) {
-        console.log(layer);
-        layer.bindPopup('<h2> Airport Code: ' + feature.properties.faa + '</h2>');
-    }
-}).addTo(map);
+// // onEachFeature function
+// L.geoJSON(SFAirport, {
+//     onEachFeature: function(feature, layer) {
+//         console.log(layer);
+//         layer.bindPopup('<h2> Airport Code: ' + feature.properties.faa + '</h2>');
+//     }
+// }).addTo(map);
 
-// 
+let airportData = 'https://raw.githubusercontent.com/coocoojames/Mapping_Earthquakes/main/majorAirports.json';
+d3.json(airportData).then((data) => {
+    console.log(data);
+    L.geoJSON(data, {
+        pointToLayer: (feature, latlng) => {
+            console.log(latlng);
+            return L.marker(latlng).bindPopup('<h1> Airport Code: ' + feature.properties.faa + '</h1>')
+        }
+    }).addTo(map);
+})
+
 console.log('Still workin baby!');
